@@ -74,7 +74,7 @@ M = {
     "Clear view": "清除视图",
     "Open log file": "打开日志文件",
     "Open log folder": "打开日志目录",
-    "All levels": "所有级别",
+    # "All levels": "所有级别",  ← 功能性 token，不可翻译（见下方说明）
     "Waiting for log location": "等待日志路径",
     # 排除页
     "Exclusions bypass proxy routing and take priority over catch-all rules. Matching is permissive: names and path entries use substring-style matching. Exclude VPN/tunnel carrier processes when needed to prevent recursive routing.": "排除项绕过代理路由，优先于通配规则。匹配规则宽松：名称和路径使用子串匹配。需要时排除 VPN/隧道载体进程以防止递归路由。",
@@ -117,8 +117,14 @@ M = {
     "Enumerating running processes": "正在枚举运行中的进程",
     "Refresh": "刷新",
     # 消息框与状态
-    "Error": "错误",
-    "Warning": "警告",
+    # 注意：以下三个是「功能性 token」，不是界面文字，绝不可翻译！
+    # 它们是日志等级的内部标识，被 LogLevelMatcher 用于比较/返回值，
+    # 同时会作为 log level 值写入 app-config.json（服务按 NLog 的英文等级解析）。
+    # 翻译后会导致：日志等级筛选失效（选 Warning 筛不出警告）、
+    # 写入配置的日志等级变成中文而服务无法识别。上游 ProxiFyre.Tests 也会失败。
+    # "All levels": "所有级别",
+    # "Error": "错误",
+    # "Warning": "警告",
     "Cancel": "取消",
     "Continue?": "确定继续？",
     "Unknown": "未知",
