@@ -1,4 +1,4 @@
-using ProxiFyre.Configuration;
+﻿using ProxiFyre.Configuration;
 using ProxiFyreUI.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -153,7 +153,7 @@ namespace ProxiFyreUI.Forms
             _suppressChanges = true;
             try
             {
-                var logLevel = new[] { "错误", "警告", "Info", "Debug", "All" }
+                var logLevel = new[] { "Error", "Warning", "Info", "Debug", "All" }
                     .FirstOrDefault(value => string.Equals(value, configuration.LogLevel,
                         StringComparison.OrdinalIgnoreCase)) ?? "Info";
                 logLevelComboBox.SelectedItem = logLevel;
@@ -1417,7 +1417,7 @@ namespace ProxiFyreUI.Forms
         private void RenderLogs()
         {
             var filter = logSearchTextBox.Text.Trim();
-            var level = logLevelFilterComboBox.SelectedItem?.ToString() ?? "所有级别";
+            var level = logLevelFilterComboBox.SelectedItem?.ToString() ?? "All levels";
             var visible = _logLines.Where(line =>
                 (filter.Length == 0 || line.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0) &&
                 LogLevelMatcher.Matches(line, level));
@@ -2040,8 +2040,8 @@ namespace ProxiFyreUI.Forms
         {
             string level;
             if (LogLevelMatcher.TryGetLevel(line, out level))
-                return string.Equals(level, "警告", StringComparison.OrdinalIgnoreCase) ||
-                       string.Equals(level, "错误", StringComparison.OrdinalIgnoreCase);
+                return string.Equals(level, "Warning", StringComparison.OrdinalIgnoreCase) ||
+                       string.Equals(level, "Error", StringComparison.OrdinalIgnoreCase);
             return line.IndexOf("warn", StringComparison.OrdinalIgnoreCase) >= 0 ||
                    line.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ||
                    line.IndexOf("fail", StringComparison.OrdinalIgnoreCase) >= 0;
