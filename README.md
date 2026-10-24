@@ -1,3 +1,9 @@
+> **中文说明（社区汉化版）**
+> 本仓库是 [wiresock/proxifyre](https://github.com/wiresock/proxifyre) 的社区汉化分支，仅将 ProxiFyreUI 的界面字符串替换为简体中文，引擎逻辑、配置文件格式、代理行为与原版完全一致。
+> 分发遵守 AGPL-3.0：保留原 LICENSE 与原作者署名；修改部分即本汉化，对应源码见 `ProxiFyreUI/` 目录中的字符串字面量。
+> 汉化贡献：界面文本替换 + 二进制免编译补丁脚本（见 `tools/` 目录），由社区维护，与原作者 NT KERNEL / wiresock 无关联。
+> 原版使用中遇到问题请以上游仓库为准。
+
 # ProxiFyre
 
 [![release](https://img.shields.io/github/v/release/wiresock/proxifyre?display_name=tag&sort=semver&label=release)](https://github.com/wiresock/proxifyre/releases/latest)

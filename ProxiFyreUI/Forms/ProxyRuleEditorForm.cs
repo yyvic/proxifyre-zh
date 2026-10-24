@@ -133,7 +133,7 @@ namespace ProxiFyreUI.Forms
             var host = hostTextBox.Text.Trim();
             if (host.Length == 0)
             {
-                errorProvider.SetError(hostTextBox, "Enter the upstream SOCKS5 host.");
+                errorProvider.SetError(hostTextBox, "输入上游 SOCKS5 主机地址。");
                 blocking = true;
             }
             else
@@ -141,12 +141,12 @@ namespace ProxiFyreUI.Forms
                 IPAddress address;
                 if (IPAddress.TryParse(host.Trim('[', ']'), out address) && address.AddressFamily == AddressFamily.InterNetworkV6)
                 {
-                    errorProvider.SetError(hostTextBox, "The current engine requires an IPv4 upstream endpoint. IPv6 literals are not supported.");
+                    errorProvider.SetError(hostTextBox, "当前引擎要求 IPv4 上游端点，不支持 IPv6 字面量。");
                     blocking = true;
                 }
                 if (host.Contains(":") || host.Contains("/") || host.Contains("\\"))
                 {
-                    errorProvider.SetError(hostTextBox, "Enter an IPv4 literal or hostname without a scheme or path.");
+                    errorProvider.SetError(hostTextBox, "输入不含协议和路径的 IPv4 地址或主机名。");
                     blocking = true;
                 }
             }
@@ -155,7 +155,7 @@ namespace ProxiFyreUI.Forms
             var hasPassword = !string.IsNullOrEmpty(passwordTextBox.Text);
             if (hasUsername != hasPassword)
             {
-                var message = "Username and password must either both be entered or both be empty.";
+                var message = "用户名和密码必须同时填写或同时留空。";
                 errorProvider.SetError(usernameTextBox, message);
                 errorProvider.SetError(passwordTextBox, message);
                 blocking = true;
@@ -163,7 +163,7 @@ namespace ProxiFyreUI.Forms
 
             if (!tcpCheckBox.Checked && !udpCheckBox.Checked)
             {
-                errorProvider.SetError(udpCheckBox, "Select at least one traffic protocol.");
+                errorProvider.SetError(udpCheckBox, "至少选择一种流量协议。");
                 blocking = true;
             }
             if (_unsupportedProtocols.Length > 0)
@@ -176,7 +176,7 @@ namespace ProxiFyreUI.Forms
             }
             if (!ipv4CheckBox.Checked && !ipv6CheckBox.Checked)
             {
-                errorProvider.SetError(ipv6CheckBox, "Select at least one destination address family.");
+                errorProvider.SetError(ipv6CheckBox, "至少选择一种目标地址类型。");
                 blocking = true;
             }
             if (_unsupportedAddressFamilies.Length > 0)
@@ -191,7 +191,7 @@ namespace ProxiFyreUI.Forms
 
             if (transportComboBox.SelectedIndex != 0 && transportComboBox.SelectedIndex != 1)
             {
-                errorProvider.SetError(transportComboBox, "Choose TCP or TLS to replace the unsupported transport value.");
+                errorProvider.SetError(transportComboBox, "选择 TCP 或 TLS 以替换不支持的传输方式。");
                 warnings.Add("Error: The loaded SOCKS5 transport value is unsupported; choose TCP or TLS.");
                 blocking = true;
             }
@@ -236,7 +236,7 @@ namespace ProxiFyreUI.Forms
                     : "SECURITY WARNING: Normal certificate validation is disabled; the configured certificate pin must be trusted explicitly.");
 
             validationLabel.Text = warnings.Count == 0
-                ? "Rule is valid. No network connection is attempted during validation."
+                ? "规则有效。验证过程不会发起网络连接。"
                 : string.Join(Environment.NewLine, warnings.Distinct());
             validationLabel.ForeColor = blocking || allowInvalidCertificateCheckBox.Checked
                 ? System.Drawing.Color.DarkRed
@@ -274,8 +274,8 @@ namespace ProxiFyreUI.Forms
 
         private void AddManualButton_Click(object sender, EventArgs e)
         {
-            using (var dialog = new InputDialog("Add application match",
-                "Enter an executable name or full/path substring. The value is preserved exactly:"))
+            using (var dialog = new InputDialog("添加应用程序匹配",
+                "输入可执行文件名或完整/路径子串。输入值将原样保留："))
             {
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                     AddApplications(new[] { dialog.Value });
@@ -304,7 +304,7 @@ namespace ProxiFyreUI.Forms
         {
             return new OpenFileDialog
             {
-                Title = "Select application executable",
+                Title = "选择应用程序可执行文件",
                 Filter = "Executable files (*.exe)|*.exe|All files (*.*)|*.*",
                 Multiselect = true,
                 CheckFileExists = true

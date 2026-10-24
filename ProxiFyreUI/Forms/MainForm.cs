@@ -137,10 +137,10 @@ namespace ProxiFyreUI.Forms
             if (!loaded.LiveFileExists)
             {
                 var source = loaded.LoadedFromSample
-                    ? "The live app-config.json is missing. A sample was loaded as unsaved working configuration."
-                    : "The live app-config.json is missing. A blank unsaved configuration was created.";
+                    ? "未找到 app-config.json，已加载示例作为未保存的工作配置。"
+                    : "未找到 app-config.json，已创建空白配置（未保存）。";
                 MessageBox.Show(this, source + "\r\n\r\nAdd at least one valid proxy rule, then save before starting the service.",
-                    "Configuration not yet saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "配置尚未保存", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -153,7 +153,7 @@ namespace ProxiFyreUI.Forms
             _suppressChanges = true;
             try
             {
-                var logLevel = new[] { "Error", "Warning", "Info", "Debug", "All" }
+                var logLevel = new[] { "错误", "警告", "Info", "Debug", "All" }
                     .FirstOrDefault(value => string.Equals(value, configuration.LogLevel,
                         StringComparison.OrdinalIgnoreCase)) ?? "Info";
                 logLevelComboBox.SelectedItem = logLevel;
@@ -198,8 +198,8 @@ namespace ProxiFyreUI.Forms
                     rule?.Socks5ProxyEndpoint ?? string.Empty,
                     FormatAuthentication(rule),
                     FormatTransport(rule?.Socks5Transport),
-                    FormatValues(rule?.SupportedProtocols, "TCP, UDP (default)"),
-                    FormatValues(rule?.SupportedAddressFamilies, "IPv4, IPv6 (default)"),
+                    FormatValues(rule?.SupportedProtocols, "TCP、UDP（默认）"),
+                    FormatValues(rule?.SupportedAddressFamilies, "IPv4、IPv6（默认）"),
                     string.Join("; ", warnings));
                 routingGrid.Rows[rowIndex].Tag = index;
                 if (warnings.Length > 0)
@@ -306,7 +306,7 @@ namespace ProxiFyreUI.Forms
             var count = configuration.Proxies.Count;
             using (var editor = new ProxyRuleEditorForm(null, count, count + 1))
             {
-                editor.Text = "Add proxy rule";
+                editor.Text = "添加代理规则";
                 if (ShowConfigurationDialog(editor) != DialogResult.OK)
                     return;
                 if (!CanCommitDialogMutation(configuration))
@@ -328,7 +328,7 @@ namespace ProxiFyreUI.Forms
             using (var editor = new ProxyRuleEditorForm(configuration.Proxies[index], index,
                 configuration.Proxies.Count))
             {
-                editor.Text = "Edit proxy rule";
+                editor.Text = "编辑代理规则";
                 if (ShowConfigurationDialog(editor) != DialogResult.OK)
                     return;
                 if (!CanCommitDialogMutation(configuration))
@@ -361,7 +361,7 @@ namespace ProxiFyreUI.Forms
             if (index < 0 || _workspace.Configuration?.Proxies == null)
                 return;
             var configuration = _workspace.Configuration;
-            if (MessageBox.Show(this, "Remove the selected proxy rule?", "Remove proxy rule",
+            if (MessageBox.Show(this, "确定移除所选代理规则？", "移除代理规则",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return;
             if (!CanCommitDialogMutation(configuration))
@@ -480,8 +480,8 @@ namespace ProxiFyreUI.Forms
             if (ConfigurationMutationBlocked || !EnsureWorkspaceAvailable())
                 return;
             var configuration = _workspace.Configuration;
-            using (var dialog = new InputDialog("Add exclusion",
-                "Enter a process name or path substring. Exclusion matching is deliberately permissive:"))
+            using (var dialog = new InputDialog("添加排除项",
+                "输入进程名或路径子串。排除匹配刻意保持宽松："))
             {
                 if (ShowConfigurationDialog(dialog) == DialogResult.OK)
                     AddExclusions(configuration, new[] { dialog.Value });
@@ -515,7 +515,7 @@ namespace ProxiFyreUI.Forms
             if (index < 0 || _workspace.Configuration?.Excludes == null)
                 return;
             var configuration = _workspace.Configuration;
-            if (MessageBox.Show(this, "Remove the selected exclusion?", "Remove exclusion",
+            if (MessageBox.Show(this, "确定移除所选排除项？", "移除排除项",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return;
             if (!CanCommitDialogMutation(configuration))
@@ -712,7 +712,7 @@ namespace ProxiFyreUI.Forms
                     expectedRegisteredEnginePath = registeredEngine.Path;
                     if (MessageBox.Show(this,
                         "Uninstall the ProxiFyre Windows service?\r\n\r\nThe configuration, backup, and log files will not be deleted.",
-                        "Uninstall service", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                        "卸载服务", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                         MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                         return;
                 }
@@ -850,7 +850,7 @@ namespace ProxiFyreUI.Forms
         {
             var recent = _logLines.Where(IsWarningOrError).TakeLastCompatible(8);
             var message = _errorFormatter.FormatServiceFailure(result, recent, CurrentSecrets());
-            MessageBox.Show(this, message, "ProxiFyre service", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(this, message, "ProxiFyre 服务", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void ReloadButton_Click(object sender, EventArgs e)
@@ -864,11 +864,11 @@ namespace ProxiFyreUI.Forms
                 if (!ConfirmDiscardUnsaved("reload the configuration from disk"))
                     return;
                 LoadWorkspace();
-                statusStripLabel.Text = "Configuration reloaded from disk.";
+                statusStripLabel.Text = "已从磁盘重新加载配置。";
             }
             catch (Exception ex)
             {
-                ShowError("The configuration could not be reloaded.", ex);
+                ShowError("配置重新加载失败。", ex);
             }
             finally
             {
@@ -884,7 +884,7 @@ namespace ProxiFyreUI.Forms
             var validation = _workspace.Validate();
             RefreshRoutingGrid(SelectedRuleIndex);
             MessageBox.Show(this, ConfigurationWorkspace.FormatValidation(validation),
-                validation.HasErrors ? "Configuration is invalid" : "Configuration validation",
+                validation.HasErrors ? "配置无效" : "配置验证",
                 MessageBoxButtons.OK, validation.HasErrors ? MessageBoxIcon.Error :
                     validation.HasWarnings ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
             UpdateAllStates();
@@ -902,8 +902,8 @@ namespace ProxiFyreUI.Forms
                 if (save?.Status == WorkspaceSaveStatus.Saved)
                 {
                     statusStripLabel.Text = _serviceStatus.IsRunning
-                        ? "Configuration saved. Restart the service to apply it."
-                        : "Configuration saved. It will be used on the next service start.";
+                        ? "配置已保存，重启服务后生效。"
+                        : "配置已保存，将在下次服务启动时生效。";
                     UpdateAllStates();
                 }
             }
@@ -1163,12 +1163,12 @@ namespace ProxiFyreUI.Forms
             if (validation.HasErrors)
             {
                 MessageBox.Show(this, ConfigurationWorkspace.FormatValidation(validation),
-                    "Configuration was not saved", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    "配置未保存", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return new WorkspaceSaveResult { Status = WorkspaceSaveStatus.ValidationFailed, Validation = validation };
             }
             if (validation.HasWarnings && MessageBox.Show(this,
                 ConfigurationWorkspace.FormatValidation(validation) + "\r\n\r\nSave despite these warnings?",
-                "Configuration warnings", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                "配置警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                 MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return null;
 
@@ -1180,12 +1180,12 @@ namespace ProxiFyreUI.Forms
                     "Yes — reload from disk and discard current edits\r\n" +
                     "No — overwrite the external version with current edits\r\n" +
                     "Cancel — leave both unchanged",
-                    "External configuration change", MessageBoxButtons.YesNoCancel,
+                    "外部配置变更", MessageBoxButtons.YesNoCancel,
                     MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3);
                 if (choice == DialogResult.Yes)
                 {
                     try { LoadWorkspace(); }
-                    catch (Exception ex) { ShowError("The external configuration could not be loaded.", ex); }
+                    catch (Exception ex) { ShowError("外部配置加载失败。", ex); }
                     return null;
                 }
                 if (choice == DialogResult.No)
@@ -1195,7 +1195,7 @@ namespace ProxiFyreUI.Forms
             }
 
             if (result.Status == WorkspaceSaveStatus.Failed)
-                ShowError("The live configuration was not changed.", result.Error);
+                ShowError("当前配置未更改。", result.Error);
             else if (result.Status == WorkspaceSaveStatus.Saved)
                 BindConfiguration();
             UpdateAllStates();
@@ -1286,17 +1286,17 @@ namespace ProxiFyreUI.Forms
                 if (string.IsNullOrWhiteSpace(filePath))
                 {
                     MessageBox.Show(this,
-                        "No ProxiFyre log file is available yet. Start the service or reload the Logs tab after a log is created.",
-                        "Log file not available", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        "暂无日志文件。请先启动服务，或在日志生成后重新加载“日志”页。",
+                        "日志文件不可用", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
                 Process.Start(new ProcessStartInfo { FileName = filePath, UseShellExecute = true });
-                statusStripLabel.Text = "Opened " + Path.GetFileName(filePath) + ".";
+                statusStripLabel.Text = "已打开 " + Path.GetFileName(filePath) + ".";
             }
             catch (Exception ex)
             {
-                ShowError("The current log file could not be opened.", ex);
+                ShowError("当前日志文件无法打开。", ex);
             }
         }
 
@@ -1317,11 +1317,11 @@ namespace ProxiFyreUI.Forms
                         .Where(password => !string.IsNullOrEmpty(password))
                 });
                 Clipboard.SetText(diagnostics);
-                statusStripLabel.Text = "Redacted diagnostics copied to the clipboard.";
+                statusStripLabel.Text = "脱敏诊断信息已复制到剪贴板。";
             }
             catch (Exception ex)
             {
-                ShowError("Diagnostics could not be copied.", ex);
+                ShowError("诊断信息复制失败。", ex);
             }
         }
 
@@ -1417,7 +1417,7 @@ namespace ProxiFyreUI.Forms
         private void RenderLogs()
         {
             var filter = logSearchTextBox.Text.Trim();
-            var level = logLevelFilterComboBox.SelectedItem?.ToString() ?? "All levels";
+            var level = logLevelFilterComboBox.SelectedItem?.ToString() ?? "所有级别";
             var visible = _logLines.Where(line =>
                 (filter.Length == 0 || line.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0) &&
                 LogLevelMatcher.Matches(line, level));
@@ -1445,7 +1445,7 @@ namespace ProxiFyreUI.Forms
         {
             _logLines.Clear();
             logRichTextBox.Clear();
-            logStatusLabel.Text = "View cleared. Service log files were not deleted.";
+            logStatusLabel.Text = "视图已清除。服务日志文件未删除。";
         }
 
         private void ReloadLogsButton_Click(object sender, EventArgs e)
@@ -1703,12 +1703,12 @@ namespace ProxiFyreUI.Forms
             serviceStateValueLabel.Text = _serviceStatus.ToString();
             serviceStateValueLabel.ForeColor = _serviceStatus.IsRunning ? Color.DarkGreen :
                 _serviceStatus.State == ProxiFyreServiceState.Error ? Color.DarkRed : SystemColors.ControlText;
-            trayServiceStatusMenuItem.Text = "Service: " + _serviceStatus;
+            trayServiceStatusMenuItem.Text = "服务：" + _serviceStatus;
             notifyIcon.Text = TruncateNotifyText("ProxiFyre — Service: " + _serviceStatus);
 
             var validation = _workspace.Configuration == null ? null : _workspace.Validate();
-            configurationStateValueLabel.Text = validation == null ? "Not loaded" :
-                validation.HasErrors ? "Configuration invalid" : "Configuration valid";
+            configurationStateValueLabel.Text = validation == null ? "未加载" :
+                validation.HasErrors ? "配置无效" : "配置有效";
             configurationStateValueLabel.ForeColor = validation?.HasErrors == true ? Color.DarkRed :
                 validation != null ? Color.DarkGreen : SystemColors.ControlText;
 
@@ -1717,17 +1717,17 @@ namespace ProxiFyreUI.Forms
             else if (_engineStartupFailed)
                 changesStateValueLabel.Text = "Engine startup failed";
             else if (_workspace.IsDirty)
-                changesStateValueLabel.Text = "Unsaved changes";
+                changesStateValueLabel.Text = "有未保存的更改";
             else if (_workspace.RestartRequired && _serviceStatus.IsRunning)
-                changesStateValueLabel.Text = "Saved, restart required";
+                changesStateValueLabel.Text = "已保存，需重启服务";
             else if (_workspace.RestartRequired)
-                changesStateValueLabel.Text = "Saved; service not running";
+                changesStateValueLabel.Text = "已保存；服务未运行";
             else if (_serviceStatus.IsRunning && validation?.HasErrors == false && _workspace.HasConfirmedApplied)
-                changesStateValueLabel.Text = "Applied";
+                changesStateValueLabel.Text = "已应用";
             else if (_serviceStatus.IsRunning && validation?.HasErrors == false)
-                changesStateValueLabel.Text = "Running; apply state unknown";
+                changesStateValueLabel.Text = "运行中；应用状态未知";
             else
-                changesStateValueLabel.Text = "Saved; service not running";
+                changesStateValueLabel.Text = "已保存；服务未运行";
 
             Text = _baseWindowTitle + (_workspace.IsDirty ? " *" : string.Empty);
             var pending = _serviceStatus.State == ProxiFyreServiceState.StartPending ||
@@ -1782,9 +1782,9 @@ namespace ProxiFyreUI.Forms
 
         private void UpdateResolvedPaths()
         {
-            enginePathTextBox.Text = _engineLocation?.Path ?? "Not resolved";
-            configurationPathTextBox.Text = _engineLocation?.ConfigurationPath ?? "Not resolved";
-            logPathTextBox.Text = _engineLocation?.LogDirectoryPath ?? "Not resolved";
+            enginePathTextBox.Text = _engineLocation?.Path ?? "未解析";
+            configurationPathTextBox.Text = _engineLocation?.ConfigurationPath ?? "未解析";
+            logPathTextBox.Text = _engineLocation?.LogDirectoryPath ?? "未解析";
             engineVersionValueLabel.Text = GetFileVersion(_engineLocation?.Path);
         }
 
@@ -1793,7 +1793,7 @@ namespace ProxiFyreUI.Forms
             if (_workspace.Configuration != null)
                 return true;
             MessageBox.Show(this, "Resolve ProxiFyre.exe and load a configuration first.",
-                "Configuration unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                "配置不可用", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
         }
 
@@ -1802,7 +1802,7 @@ namespace ProxiFyreUI.Forms
             if (string.IsNullOrWhiteSpace(_workspace.ConfigurationPath) || !File.Exists(_workspace.ConfigurationPath))
             {
                 MessageBox.Show(this, "Save a valid app-config.json before attempting to " + operation + " the service.",
-                    "Configuration missing", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    "配置缺失", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
             ValidationResult liveValidation;
@@ -1822,18 +1822,18 @@ namespace ProxiFyreUI.Forms
                 MessageBox.Show(this,
                     "The saved app-config.json is invalid. The service was not " + operation + "ed.\r\n\r\n" +
                     ConfigurationWorkspace.FormatValidation(liveValidation, false),
-                    "Saved configuration is invalid", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    "已保存的配置无效", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             if (hasExternalChanges && MessageBox.Show(this,
                 "app-config.json changed outside ProxiFyreUI. The external file is valid, but this window is showing an older version.\r\n\r\n" +
                 "Continue using the externally changed file?",
-                "External configuration change", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                "外部配置变更", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                 MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return false;
             if (_workspace.IsDirty && MessageBox.Show(this,
                 "There are unsaved edits. The service will use the configuration currently on disk, not these edits.\r\n\r\nContinue?",
-                "Unsaved edits", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                "未保存的编辑", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                 MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return false;
             return true;
@@ -1849,7 +1849,7 @@ namespace ProxiFyreUI.Forms
         {
             return !_workspace.IsDirty || MessageBox.Show(this,
                 "There are unsaved configuration changes. Continuing will discard them.\r\n\r\nContinue to " + action + "?",
-                "Discard unsaved changes", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                "放弃未保存的更改", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                 MessageBoxDefaultButton.Button2) == DialogResult.Yes;
         }
 
@@ -2019,8 +2019,8 @@ namespace ProxiFyreUI.Forms
         private static string FormatAuthentication(ProxyRule rule)
         {
             return !string.IsNullOrEmpty(rule?.Username) || !string.IsNullOrEmpty(rule?.Password)
-                ? "Credentials configured"
-                : "None";
+                ? "已配置凭据"
+                : "无";
         }
 
         private static string FormatTransport(string transport)
@@ -2033,15 +2033,15 @@ namespace ProxiFyreUI.Forms
 
         private static string FormatValues(IList<string> values, string fallback)
         {
-            return values == null ? fallback : values.Count == 0 ? "<none>" : string.Join(", ", values);
+            return values == null ? fallback : values.Count == 0 ? "<无>" : string.Join(", ", values);
         }
 
         private static bool IsWarningOrError(string line)
         {
             string level;
             if (LogLevelMatcher.TryGetLevel(line, out level))
-                return string.Equals(level, "Warning", StringComparison.OrdinalIgnoreCase) ||
-                       string.Equals(level, "Error", StringComparison.OrdinalIgnoreCase);
+                return string.Equals(level, "警告", StringComparison.OrdinalIgnoreCase) ||
+                       string.Equals(level, "错误", StringComparison.OrdinalIgnoreCase);
             return line.IndexOf("warn", StringComparison.OrdinalIgnoreCase) >= 0 ||
                    line.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ||
                    line.IndexOf("fail", StringComparison.OrdinalIgnoreCase) >= 0;
@@ -2069,7 +2069,7 @@ namespace ProxiFyreUI.Forms
         {
             return new OpenFileDialog
             {
-                Title = "Select executable",
+                Title = "选择可执行文件",
                 Filter = "Executable files (*.exe)|*.exe|All files (*.*)|*.*",
                 Multiselect = true,
                 CheckFileExists = true
@@ -2102,7 +2102,7 @@ namespace ProxiFyreUI.Forms
         {
             var os = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432") ??
                      Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE") ??
-                     (Environment.Is64BitOperatingSystem ? "64-bit" : "32-bit");
+                     (Environment.Is64BitOperatingSystem ? "64 位" : "32 位");
             var process = Environment.Is64BitProcess ?
                 (string.Equals(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"), "ARM64",
                     StringComparison.OrdinalIgnoreCase) ? "ARM64" : "x64") : "x86";

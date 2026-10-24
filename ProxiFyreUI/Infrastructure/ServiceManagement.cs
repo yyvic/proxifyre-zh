@@ -243,8 +243,8 @@ namespace ProxiFyreUI.Infrastructure
                 case ProxiFyreServiceState.PausePending: return "Pause pending";
                 case ProxiFyreServiceState.ContinuePending: return "Continue pending";
                 case ProxiFyreServiceState.DeletionPending: return "Deletion pending";
-                case ProxiFyreServiceState.Error: return "Error";
-                default: return "Unknown";
+                case ProxiFyreServiceState.Error: return "错误";
+                default: return "未知";
             }
         }
     }

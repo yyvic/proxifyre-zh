@@ -51,12 +51,12 @@ namespace ProxiFyreUI.Infrastructure
             builder.AppendLine("OS architecture: " + GetOperatingSystemArchitecture());
             builder.AppendLine("GUI process architecture: " + GetProcessArchitecture());
             builder.AppendLine("Service name: " + ProxiFyrePaths.ServiceName);
-            builder.AppendLine("Service state: " + (context.ServiceStatus?.ToString() ?? "Unknown"));
+            builder.AppendLine("Service state: " + (context.ServiceStatus?.ToString() ?? "未知"));
             if (!string.IsNullOrWhiteSpace(context.ServiceStatus?.Error))
                 builder.AppendLine("Service error: " + Redact(context.ServiceStatus.Error, secrets));
-            builder.AppendLine("Engine path: " + (context.EnginePath ?? "Not resolved"));
-            builder.AppendLine("Configuration path: " + (context.ConfigurationPath ?? "Not resolved"));
-            builder.AppendLine("Log directory: " + (context.LogDirectoryPath ?? "Not resolved"));
+            builder.AppendLine("Engine path: " + (context.EnginePath ?? "未解析"));
+            builder.AppendLine("Configuration path: " + (context.ConfigurationPath ?? "未解析"));
+            builder.AppendLine("Log directory: " + (context.LogDirectoryPath ?? "未解析"));
 
             if (context.Validation == null)
             {
@@ -365,7 +365,7 @@ namespace ProxiFyreUI.Infrastructure
             var value = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432") ??
                         Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
             return string.IsNullOrWhiteSpace(value)
-                ? (Environment.Is64BitOperatingSystem ? "64-bit" : "32-bit")
+                ? (Environment.Is64BitOperatingSystem ? "64 位" : "32 位")
                 : value;
         }
 

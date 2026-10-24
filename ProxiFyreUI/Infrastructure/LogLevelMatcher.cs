@@ -12,7 +12,7 @@ namespace ProxiFyreUI.Infrastructure
     {
         public static bool Matches(string line, string selectedLevel)
         {
-            if (string.Equals(selectedLevel, "All levels", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(selectedLevel, "所有级别", StringComparison.OrdinalIgnoreCase))
                 return true;
             if (string.IsNullOrWhiteSpace(line) || string.IsNullOrWhiteSpace(selectedLevel))
                 return false;
@@ -70,10 +70,10 @@ namespace ProxiFyreUI.Infrastructure
             {
                 case "FATAL":
                 case "ERROR":
-                    return "Error";
+                    return "错误";
                 case "WARN":
                 case "WARNING":
-                    return "Warning";
+                    return "警告";
                 case "INFO":
                 case "INFORMATION":
                     return "Info";
